@@ -1,0 +1,11 @@
+# SCAPE604-apri-server-socket - start or restart apri-server-socket service
+#
+#
+
+description     "(re)start apri-server-socket service"
+start on runlevel [2345]
+respawn
+task
+script
+   exec /opt/SCAPE604/apri-server-socket/apri-server-socket.sh /opt/SCAPE604/log/SCAPE604-apri-server-socket.log
+end script
