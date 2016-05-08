@@ -65,7 +65,7 @@ var io = require('socket.io').listen(app.listen(apriConfig.systemListenPort));
 console.log('listening to http://proxyintern: ' + apriConfig.systemListenPort);
 
 io.sockets.on('connection', function (socket) {
-	console.log('connection');
+	console.log('connect from '+ socket.request.connection.remoteAddress);
 //    socket.emit('humansensordata', { message: 'welcome humansensordata' });
     socket.emit('connected', { message: 'welcome' });
 //    socket.on('send', function (data) {
