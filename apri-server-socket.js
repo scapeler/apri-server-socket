@@ -61,7 +61,17 @@ app.get('/'+apriConfig.systemCode+'/eventsource/:eventsource', function(req, res
 });
 */
 
-var io = require('socket.io').listen(app.listen(apriConfig.systemListenPort));
+/*
+var io = require('socket.io').listen(app.listen(apriConfig.systemListenPort),{
+    //serveClient: config.env !== 'production',
+    path: '/SCAPE604/socket.io'
+});
+*/
+
+var io = require('socket.io')({path: '/SCAPE604/socket.io'});
+io.on('connection', function(socket){});
+io.listen(apriConfig.systemListenPort);
+
 console.log('listening to http://proxyintern: ' + apriConfig.systemListenPort);
 
 io.sockets.on('connection', function (socket) {
