@@ -14,16 +14,16 @@ action.message	= {
 		text:'Dit is een testbericht'
 };
 ioSockets.esSchedule	= [
-	{id:'S001', beginDT: '', endDT:'', limit:'minute', hours:{repeat:{begin:0,end:23,pulse:1},'8':true,'9':true,'10':true,'11':true,'12':true,'13':true,'14':true,'16':true,'18':true,'20':true,'21':true,'22':true,'23':true}, minutes:{repeat:{begin:0,end:59,pulse:0}}, seconds:{'0':true}, esProcessId:'P001'}
+	{id:'S001', beginDT: '', endDT:'', limit:'minute', hours:{repeat:{begin:0,end:23,pulse:1},'8':true,'9':true,'10':true,'11':true,'12':true,'13':true,'14':true,'16':true,'18':true,'20':true,'21':true,'22':true,'23':true}, minutes:{repeat:{begin:0,end:59,pulse:1}}, seconds:{'0':true}, esProcessId:'P001'}
 ];
 
 
 ioSockets.esProcess	= {
 	'P001': {
 		action: { 
-		  	  'begin': {'id':'A001', type:'humansensordata', text:'A001: Testbericht', onEnd:'A002', duration:2000, pulse:2000}
-			, 'A002': {'id':'A002',type:'humansensordata', text:'A002: Testbericht', onEnd:'end', duration:2000, pulse:2000}
-			, 'end': {'id':'A003',type:'humansensordata', text:'A003: Testbericht', duration:2000}
+		  	  'begin': {'id':'A001', type:'humansensordata', text:'A001: Testbericht', onEnd:'A002', duration:5000, pulse:2000}
+			, 'A002': {'id':'A002',type:'humansensordata', text:'A002: Testbericht', onEnd:'end', duration:5000, pulse:2000}
+			, 'end': {'id':'A003',type:'humansensordata', text:'A003: Testbericht', duration:5000}
 		}
 	}
 };
@@ -126,7 +126,7 @@ var dispatchCaseActionEvents	= function() {
 			if (_action.processAction.text) _event	+= ',"text": "' + _action.processAction.text + '"';
 			_event	+= '}';
 			_IOSockets.emit(_action.processAction.type,_event )
-			console.log('socket.io event: '+ _action.startTime + ' ' + _action.endTime + ' ' + _action.processAction.type + ' ' + _event);
+			console.log('socket.io event: '+ _action.startTime + ' ' + _action.endTime + ' ' + _action.processAction.type + ' ' + _event + ' on: ' + new Date().getTime());
 			_action.sleep	= true;
 		}
 	};
@@ -149,29 +149,15 @@ module.exports = {
 // Socket.io case actions manager
 // creates case actions from schedule promised between 1999ms from current datetime rounded at seconds.
 var createESCaseActions	= function() {
-	var dt					= {};
-	dt.curr_date			= new Date();
-	var tmpTime				= (Math.round((dt.curr_date.getTime()+1999)/1000)*1000); // round to next second
-	dt.scheduleTime			= tmpTime
-	dt.schedule				= new Date(dt.scheduleTime);
-	dt.scheduleYear			= dt.schedule.getFullYear();
-	dt.scheduleMonth		= dt.schedule.getMonth();
-	dt.scheduleDay			= dt.schedule.getDate();
-	dt.scheduleHour			= dt.schedule.getHours();
-	dt.scheduleHourStr		= ''+dt.scheduleHour;
-	dt.scheduleMinute		= dt.schedule.getMinutes();
-	dt.scheduleMinuteStr	= ''+dt.scheduleMinute;
-	dt.scheduleSecond		= 0; //dt.schedule.getSeconds();
-	dt.caseTimeLimitMinute	= new Date(dt.scheduleYear,dt.scheduleMonth,dt.scheduleDay,dt.scheduleHour,dt.scheduleMinute).getTime();  // case time to limit dispatch once per minute 
-	dt.caseTimeLimitSecond	= new Date(dt.scheduleYear,dt.scheduleMonth,dt.scheduleDay,dt.scheduleHour,dt.scheduleMinute,dt.scheduleSecond).getTime();  // case time to limit dispatch once per minute 
+
+
 	
-	if (dt.scheduleSecond==0) console.log('hh mm ss: '+dt.scheduleHour+' '+dt.scheduleMinute+' '+dt.scheduleSecond);
-	
-	// remove old case actions
+	// remove old case actions	
+	var removeDate	= new Date().getTime();
 	var toRemove	= {};
 	for (var action in ioSockets.esCaseAction) {
-		if (ioSockets.esCaseAction[action].endTime-1 < dt.scheduleTime) {
-			//console.log('case action prepare to remove: ' + ioSockets.esCaseAction[action].caseActionKey);
+		if (ioSockets.esCaseAction[action].endTime < removeDate) {
+			console.log('case action prepare to remove: ' + ioSockets.esCaseAction[action].caseActionKey +'; remove date: ' + removeDate);
 			//console.log(ioSockets.esCaseAction[action].endTime);
 			//console.log(dt.scheduleTime);
 			ioSockets.esCaseAction[action].active= false;
@@ -179,14 +165,44 @@ var createESCaseActions	= function() {
 		}
 	}
 	for (var action in toRemove) {
-		console.log('Case action removed: ' + action ); //ioSockets.esCaseAction[action].caseActionKey);
-		delete ioSockets.esCaseAction[action];
-	}
-	
+		console.log('Case action removed: ' + action + ' on: ' + new Date().getTime()); //ioSockets.esCaseAction[action].caseActionKey);
+		if (ioSockets.esCaseAction[action]!=undefined) {
+			delete ioSockets.esCaseAction[action];
+		} else {
+			console.log('Error: case action not found, cannot be deleted: ' + action);
+		}	
+	}	
 	
 	
 	for (var sI=0;sI<ioSockets.esSchedule.length;sI++) {
+		var tmpTime;
+
 		var _esSchedule	= ioSockets.esSchedule[sI];
+
+		var dt					= {};
+		dt.curr_date			= new Date();
+		if (_esSchedule.limit=='minute') {
+			tmpTime				= (Math.round((dt.curr_date.getTime()+59999)/1000)*1000); // round to next second
+		} else {
+			tmpTime				= (Math.round((dt.curr_date.getTime()+999)/1000)*1000); // round to next second
+		}
+		console.log(dt.curr_date.getTime() + ' ' + tmpTime);
+		dt.scheduleTime			= tmpTime
+		dt.schedule				= new Date(dt.scheduleTime);
+		dt.scheduleYear			= dt.schedule.getFullYear();
+		dt.scheduleMonth		= dt.schedule.getMonth();
+		dt.scheduleDay			= dt.schedule.getDate();
+		dt.scheduleHour			= dt.schedule.getHours();
+		dt.scheduleHourStr		= ''+dt.scheduleHour;
+		dt.scheduleMinute		= dt.schedule.getMinutes();
+		dt.scheduleMinuteStr	= ''+dt.scheduleMinute;
+		dt.scheduleSecond		= 0; //dt.schedule.getSeconds();
+		dt.caseTimeLimitMinute	= new Date(dt.scheduleYear,dt.scheduleMonth,dt.scheduleDay,dt.scheduleHour,dt.scheduleMinute).getTime();  // case time to limit dispatch once per minute 
+		dt.caseTimeLimitSecond	= new Date(dt.scheduleYear,dt.scheduleMonth,dt.scheduleDay,dt.scheduleHour,dt.scheduleMinute,dt.scheduleSecond).getTime();  // case time to limit dispatch once per minute 
+	
+		if (dt.scheduleSecond==0) console.log('hh mm ss: '+dt.scheduleHour+' '+dt.scheduleMinute+' '+dt.scheduleSecond);
+	
+	
 		
 		// is schedule active for now?
 		if (_esSchedule.hours && _esSchedule.hours[dt.scheduleHourStr]!=true) {
@@ -202,14 +218,10 @@ var createESCaseActions	= function() {
 		var _process								= ioSockets.esProcess[_esSchedule.esProcessId];  // _process = defines process and actions
 		_process.action.esProcessId					= _esSchedule.esProcessId;
 		
-		var actionTime								= dt.scheduleTime;
 		var _actionId								= 'begin';   // first action in process actions chain
 		
 		_process.action[_actionId].actionId			= _actionId;
 		_process.action[_actionId].esProcessId		= _esSchedule.esProcessId;
-		
-		var caseActionKeyTime						= dt.scheduleTime;
-		_process.action[_actionId].caseActionKeyTime= caseActionKeyTime;
 		
 		
 		// case time to limit dispatching (per minute or second)  
@@ -218,7 +230,11 @@ var createESCaseActions	= function() {
 		} else {
 			_process.action[_actionId].caseTime		= dt.caseTimeLimitMinute;
 		}
-		var _processKey = _esSchedule.esProcessId+_process.action[_actionId].caseTime;
+		var _processKey = _esSchedule.esProcessId+'_'+_process.action[_actionId].caseTime;
+		var actionTime								= _process.action[_actionId].caseTime;
+
+		var caseActionKeyTime						= actionTime;
+		_process.action[_actionId].caseActionKeyTime= caseActionKeyTime;
 		
 		if (ioSockets.dispatchedProcesses[_processKey]) {
 			//console.log('process already created: '+_processKey);
@@ -230,22 +246,26 @@ var createESCaseActions	= function() {
 
 		// 
 		if (_process.action && _process.action[_actionId]) {
+			// add process key to process cases stack
 			ioSockets.dispatchedProcesses[_processKey]={};
+			// create case actions for process
 			createCaseActions(_process, _process.action[_actionId], actionTime);
 		}	
 		
 	}
+	
+
+	
 }
 
 // create case actions from scheduled process
 var createCaseActions	= function(process, processAction, actionTime) {
 	var _action				= {};
 	
-	var caseActionKey		= processAction.esProcessId + '_' + processAction.actionId + '_' + processAction.caseActionKeyTime;
+	var caseActionKey		= processAction.esProcessId + '_' + processAction.actionId + '_' + actionTime; //+processAction.caseActionKeyTime; //
 	
 	if (ioSockets.esCaseAction[caseActionKey]) return; // caseAction already created
 	
-	console.log('Start creating case actions: ' + actionTime + ' / ' + processAction.esProcessId   + ' / ' + processAction.actionId  + ' / ' + processAction.processKey);
 
 	_action.process			= process;
 	_action.processAction	= processAction;
@@ -256,6 +276,9 @@ var createCaseActions	= function(process, processAction, actionTime) {
 	_action.caseActionKey	= caseActionKey;
 	_action.active			= true;
 	ioSockets.esCaseAction[caseActionKey] = _action;
+
+	console.log('Case action created: ' + _action.startTime + ' / ' + _action.endTime + ' / ' + processAction.esProcessId   + ' / ' + processAction.actionId  + ' / ' + processAction.processKey + ' on: ' + new Date().getTime());
+
 	//console.log('Socket.io case action created: ' + caseActionKey);
 	if (processAction.onEnd) {
 		var _actionId		= processAction.onEnd;
