@@ -21,7 +21,7 @@ ioSockets.esSchedule	= [
 ioSockets.esProcess	= {
 	'P001': {
 		action: { 
-		  	  'begin': {'id':'A001', type:'humansensordata', text:'A001: Testbericht', onEnd:'A002', duration:5000, pulse:2000}
+		  	  'begin': {'id':'A001', type:'humansensordata', text:'A001: Testbericht', onEnd:'A002', duration:10000, pulse:2000}
 			, 'A002': {'id':'A002',type:'humansensordata', text:'A002: Testbericht', onEnd:'end', duration:5000, pulse:2000}
 			, 'end': {'id':'A003',type:'humansensordata', text:'A003: Testbericht', duration:5000}
 		}
@@ -123,6 +123,8 @@ var dispatchCaseActionEvents	= function() {
 			_event	= '{'; 
 			_event	+= '"caseId":"' + _action.caseActionKey+'"';
 			_event	+= ',"id":"' + _action.processAction.id+'"';
+			_event	+= ',"beginTime":' + _action.startTime+'';
+			_event	+= ',"endTime":' + _action.endTime+'';
 			if (_action.processAction.text) _event	+= ',"text": "' + _action.processAction.text + '"';
 			_event	+= '}';
 			_IOSockets.emit(_action.processAction.type,_event )
