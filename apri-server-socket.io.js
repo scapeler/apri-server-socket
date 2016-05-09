@@ -6,6 +6,8 @@
 
 var _IOSockets; // all active io.sockets 
 
+var earlySend	= 20000;  // send actions 20 seconds before begintime otherwise they maybe arive too late (wifi old laptop)
+
 var ioSockets= {};
 
 var action	=	{};
@@ -115,14 +117,18 @@ ioSockets.humansensor	= function() {
 var dispatchCaseActionEvents	= function() {
 	var _action, _event;
 	var _nowTime	= new Date().getTime();
+	var _earlyTime	= _nowTime+earlySend;
+	
 	for (var actionKey in ioSockets.esCaseAction) {
 		_action	= ioSockets.esCaseAction[actionKey]
 		if (_action.active == false || _action.sleep == true) continue;
-		if (_nowTime >= _action.startTime && _nowTime <= _action.endTime) {
+		if (_earlyTime >= _action.startTime && _earlyTime <= _action.endTime) {
 			_action.processAction.type?_action.processAction.type:'message';  //default type is message
 			_event	= '{'; 
 			_event	+= '"caseId":"' + _action.caseActionKey+'"';
 			_event	+= ',"id":"' + _action.processAction.id+'"';
+			_event	+= ',"sentTime":' + _nowTime+'';
+			_event	+= ',"earlyTime":' + _earlyTime+'';
 			_event	+= ',"beginTime":' + _action.startTime+'';
 			_event	+= ',"endTime":' + _action.endTime+'';
 			if (_action.processAction.text) _event	+= ',"text": "' + _action.processAction.text + '"';
