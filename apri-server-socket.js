@@ -77,12 +77,21 @@ console.log('listening to http://proxyintern: ' + apriConfig.systemListenPort);
 io.sockets.on('connection', function (socket) {
 	console.log('connect from '+ socket.request.connection.remoteAddress);
 //    socket.emit('humansensordata', { message: 'welcome humansensordata' });
+	io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
+	console.log('nr of connections:'+io.engine.clientsCount);
     socket.emit('connected', { message: 'welcome' });
+	socket.on('disconnect', function() {
+        console.log('user disconnected');
+		console.log('disconnect from '+ socket.request.connection.remoteAddress);
+		io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
+		console.log('nr of connections:'+io.engine.clientsCount);
+    });
 //    socket.on('send', function (data) {
 //        io.sockets.emit('message', data);
 //    });
 	
 });
+
 
 apriSocketIO.streamEvents(io.sockets, 'humansensor');
 

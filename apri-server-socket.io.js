@@ -6,7 +6,7 @@
 
 var _IOSockets; // all active io.sockets 
 
-var earlySend	= 20000;  // send actions 20 seconds before begintime otherwise they maybe arive too late (wifi old laptop)
+var earlySend	= 20000;  // send actions 20 seconds before begintime otherwise they maybe arive too late (accuracy clocktime or network latency wifi old laptop)
 
 var ioSockets= {};
 
