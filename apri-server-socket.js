@@ -69,14 +69,14 @@ var io = require('socket.io').listen(app.listen(apriConfig.systemListenPort),{
 */
 
 var io = require('socket.io')({path: '/SCAPE604/socket.io'});
-io.on('connection', function(socket){});
-io.listen(apriConfig.systemListenPort);
+//io.on('connection', function(socket){});
 
 console.log('listening to http://proxyintern: ' + apriConfig.systemListenPort);
 
 io.sockets.on('connection', function (socket) {
 	console.log('connect from '+ socket.request.connection.remoteAddress);
 //    socket.emit('humansensordata', { message: 'welcome humansensordata' });
+	apriSocketIO.sendActiveActions(socket);
 	io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
 	console.log('nr of connections:'+io.engine.clientsCount);
     socket.emit('connected', { message: 'welcome' });
@@ -91,6 +91,8 @@ io.sockets.on('connection', function (socket) {
 //    });
 	
 });
+
+io.listen(apriConfig.systemListenPort);
 
 
 apriSocketIO.streamEvents(io.sockets, 'humansensor');

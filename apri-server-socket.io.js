@@ -16,16 +16,23 @@ action.message	= {
 		text:'Dit is een testbericht'
 };
 ioSockets.esSchedule	= [
-	{id:'S001', beginDT: '', endDT:'', limit:'minute', hours:{repeat:{begin:0,end:23,pulse:1},'8':true,'9':true,'10':true,'11':true,'12':true,'13':true,'14':true,'16':true,'18':true,'20':true,'21':true,'22':true,'23':true}, minutes:{repeat:{begin:0,end:59,pulse:1}}, seconds:{'0':true}, esProcessId:'P001'}
+	{id:'S001', beginDT: '', endDT:'', limit:'minute'
+	, hours:{repeat:{begin:0,end:23,pulse:1},'8':true,'9':true,'10':true,'11':true,'12':true,'13':true,'14':true,'16':true,'18':true,'20':true,'21':true,'22':true,'23':true}
+	, minutes:{repeat:{begin:0,end:59,pulse:5}}
+	, seconds:{'0':true}
+	, esProcessId:'P001'}
 ];
 
 
 ioSockets.esProcess	= {
 	'P001': {
 		action: { 
-		  	  'begin': {'id':'A001', type:'humansensordata', text:'A001: Testbericht', onEnd:'A002', duration:10000, pulse:2000}
-			, 'A002': {'id':'A002',type:'humansensordata', text:'A002: Testbericht', onEnd:'end', duration:5000, pulse:2000}
-			, 'end': {'id':'A003',type:'humansensordata', text:'A003: Testbericht', duration:5000}
+		  	  'begin': 	{'id':'begin', 	actionType: 'begin', type:'humansensordata', onEnd:'A002A', duration:0}
+			, 'A002A': 	{'id':'A002A', 	actionType: 'A002', type:'humansensordata', actionStatus:'gold', 	text:'A002A: U heeft nu 1 minuut de tijd om de omgeving op u in te laten werken. ', onEnd:'A002B', duration:60000, pulse:2000}
+			, 'A002B': 	{'id':'A002B', 	actionType: 'A002', type:'humansensordata', actionStatus:'gold', 	text:'A002B: U kunt nu de vragen beantwoorden, u heeft daarvoor 1 minuut de tijd.', onEnd:'A003A', duration:60000, pulse:2000}
+			, 'A003A': 	{'id':'A003A', 	actionType: 'A003', type:'humansensordata', actionStatus:'green', 	text:'A002B: Binnen een paar minuten zijn de reacties verwerkt en kunt u deze op de resultaten pagina bekijken.', onEnd:'A003B', duration:60000, pulse:2000}
+			, 'A003B': 	{'id':'A003B', 	actionType: 'A003', type:'humansensordata', actionStatus:'green', 	text:'A003: Bedankt voor uw bijdrage', onEnd:'end', duration:60000}
+			, 'end': 	{'id':'end', 	actionType: 'end', type:'humansensordata', duration:0 }
 		}
 	}
 };
@@ -86,6 +93,11 @@ for (var rec in ioSockets.esSchedule) {
 ,'0':true,'10':true,'20':true,'30':true,'40':true,'50':true
 
 /* 
+action:
+	id
+	actionType			this triggers the application function (processing actions)
+	
+
 case action:
 	caseActionKey	composed of esProcessId_actionId_caseStartTime
 	type			event type
@@ -114,26 +126,47 @@ ioSockets.humansensor	= function() {
 
 }
 
-var dispatchCaseActionEvents	= function() {
-	var _action, _event;
+var dispatchCaseActionEvents	= function(socket) {
+	var _action, _event, _earlyTime;
 	var _nowTime	= new Date().getTime();
-	var _earlyTime	= _nowTime+earlySend;
+//	_earlyTime		= _nowTime;
+//	if (socket == undefined) {  // do not use earlysend when (re)emitting for new connection
+//		_earlyTime	+= earlySend;
+//	}
+	_earlyTime		= _nowTime + earlySend;
+	
+//	console.log('Earlytime nowtime: '+_earlyTime+ ' ' + _nowTime+ ' ' + socket);
+	
+	
 	
 	for (var actionKey in ioSockets.esCaseAction) {
+		if (socket != undefined) {
+			console.log(actionKey);
+		}	
 		_action	= ioSockets.esCaseAction[actionKey]
-		if (_action.active == false || _action.sleep == true) continue;
+		if (_action.active == false ) continue;
+		if (_action.sleep == true && socket == undefined) continue;  //action already sent. When socket !=undefined is new connection so resend case action.
+		
+		
 		if (_earlyTime >= _action.startTime && _earlyTime <= _action.endTime) {
 			_action.processAction.type?_action.processAction.type:'message';  //default type is message
 			_event	= '{'; 
 			_event	+= '"caseId":"' + _action.caseActionKey+'"';
 			_event	+= ',"id":"' + _action.processAction.id+'"';
+			_event	+= ',"actionType":"' + _action.processAction.actionType+'"';
+			_event	+= ',"actionStatus":"' + _action.processAction.actionStatus+'"';			
 			_event	+= ',"sentTime":' + _nowTime+'';
 			_event	+= ',"earlyTime":' + _earlyTime+'';
 			_event	+= ',"beginTime":' + _action.startTime+'';
 			_event	+= ',"endTime":' + _action.endTime+'';
 			if (_action.processAction.text) _event	+= ',"text": "' + _action.processAction.text + '"';
 			_event	+= '}';
-			_IOSockets.emit(_action.processAction.type,_event )
+			if (socket == undefined) {
+				_IOSockets.emit(_action.processAction.type,_event );
+			} else {
+				console.log('(re-)send active action(s) for one client');
+				socket.emit(_action.processAction.type,_event );
+			}
 			console.log('socket.io event: '+ _action.startTime + ' ' + _action.endTime + ' ' + _action.processAction.type + ' ' + _event + ' on: ' + new Date().getTime());
 			_action.sleep	= true;
 		}
@@ -149,7 +182,14 @@ module.exports = {
 		ioSockets[socketIOType]();
 		return;	
 	}
-
+	
+	, sendActiveActions: function(socket){
+		console.log('re-activate actions for new client');
+		dispatchCaseActionEvents(socket);		
+	}
+	
+	
+	
 };  // end of exports
 
 
@@ -194,7 +234,7 @@ var createESCaseActions	= function() {
 		} else {
 			tmpTime				= (Math.round((dt.curr_date.getTime()+999)/1000)*1000); // round to next second
 		}
-		console.log(dt.curr_date.getTime() + ' ' + tmpTime);
+		//console.log(dt.curr_date.getTime() + ' ' + tmpTime);
 		dt.scheduleTime			= tmpTime
 		dt.schedule				= new Date(dt.scheduleTime);
 		dt.scheduleYear			= dt.schedule.getFullYear();
@@ -208,10 +248,9 @@ var createESCaseActions	= function() {
 		dt.caseTimeLimitMinute	= new Date(dt.scheduleYear,dt.scheduleMonth,dt.scheduleDay,dt.scheduleHour,dt.scheduleMinute).getTime();  // case time to limit dispatch once per minute 
 		dt.caseTimeLimitSecond	= new Date(dt.scheduleYear,dt.scheduleMonth,dt.scheduleDay,dt.scheduleHour,dt.scheduleMinute,dt.scheduleSecond).getTime();  // case time to limit dispatch once per minute 
 	
-		if (dt.scheduleSecond==0) console.log('hh mm ss: '+dt.scheduleHour+' '+dt.scheduleMinute+' '+dt.scheduleSecond);
+		//if (dt.scheduleSecond==0) console.log('hh mm ss: '+dt.scheduleHour+' '+dt.scheduleMinute+' '+dt.scheduleSecond);
 	
 	
-		
 		// is schedule active for now?
 		if (_esSchedule.hours && _esSchedule.hours[dt.scheduleHourStr]!=true) {
 			continue;
@@ -233,13 +272,14 @@ var createESCaseActions	= function() {
 		
 		
 		// case time to limit dispatching (per minute or second)  
-		if (_process.limit=='second') {
-			_process.action[_actionId].caseTime		= dt.caseTimeLimitSecond;
-		} else {
+		if (_process.limit=='minute') {
 			_process.action[_actionId].caseTime		= dt.caseTimeLimitMinute;
+		} else {
+			_process.action[_actionId].caseTime		= dt.caseTimeLimitSecond;
 		}
 		var _processKey = _esSchedule.esProcessId+'_'+_process.action[_actionId].caseTime;
 		var actionTime								= _process.action[_actionId].caseTime;
+		
 
 		var caseActionKeyTime						= actionTime;
 		_process.action[_actionId].caseActionKeyTime= caseActionKeyTime;
@@ -279,7 +319,7 @@ var createCaseActions	= function(process, processAction, actionTime) {
 	_action.processAction	= processAction;
 //	_action.caseTime		= ,dt.scheduleMinute
 	_action.startTime		= actionTime; 
-	var duration 			= processAction.duration?processAction.duration:60000;
+	var duration 			= processAction.duration!=undefined?processAction.duration:60000;
 	_action.endTime			= actionTime + duration  // default duration 1 minute
 	_action.caseActionKey	= caseActionKey;
 	_action.active			= true;
@@ -288,6 +328,7 @@ var createCaseActions	= function(process, processAction, actionTime) {
 	console.log('Case action created: ' + _action.startTime + ' / ' + _action.endTime + ' / ' + processAction.esProcessId   + ' / ' + processAction.actionId  + ' / ' + processAction.processKey + ' on: ' + new Date().getTime());
 
 	//console.log('Socket.io case action created: ' + caseActionKey);
+	//console.log(processAction.onEnd);
 	if (processAction.onEnd) {
 		var _actionId		= processAction.onEnd;
 		process.action[processAction.onEnd].actionId			= _actionId;
