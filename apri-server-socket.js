@@ -75,6 +75,9 @@ console.log('listening to http://proxyintern: ' + apriConfig.systemListenPort);
 
 io.sockets.on('connection', function (socket) {
 	console.log('connect from '+ socket.request.connection.remoteAddress);
+	console.log('connect from2 '+ socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address);
+	
+	
 //    socket.emit('humansensordata', { message: 'welcome humansensordata' });
 	apriSocketIO.sendActiveActions(socket);
 	io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
