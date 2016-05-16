@@ -29,7 +29,7 @@ ioSockets.esProcess	= {
 		action: { 
 		  	  'begin': 	{'id':'begin', 	actionType: 'begin', type:'humansensordata', onEnd:'A002A', duration:0}
 			, 'A002A': 	{'id':'A002A', 	actionType: 'A002', type:'humansensordata', actionStatus:'info', 	text:'Binnen 1 minuut start de speciale periode voor observaties, U heeft dan 5 minuten de tijd om de vragen te beantwoorden. Bent u er klaar voor? ', onEnd:'A002B', duration:60000, pulse:2000}
-			, 'A002B': 	{'id':'A002B', 	actionType: 'A002', type:'humansensordata', actionStatus:'gold', 	text:'U kunt nu de vragen beantwoorden, u heeft daarvoor 5 minuten de tijd.', onEnd:'A003A', duration:300000, pulse:2000}
+			, 'A002B': 	{'id':'A002B', 	actionType: 'A002', type:'humansensordata', actionStatus:'gold', notificationType:'gold', 	text:'U kunt nu de vragen beantwoorden, u heeft daarvoor 5 minuten de tijd.', onEnd:'A003A', duration:300000, pulse:2000}
 			, 'A003A': 	{'id':'A003A', 	actionType: 'A003', type:'humansensordata', actionStatus:'info', 	text:'Binnen een paar minuten zijn de reacties verwerkt en kunt u deze op de resultaten pagina bekijken.', onEnd:'A003B', duration:60000, pulse:2000}
 			, 'A003B': 	{'id':'A003B', 	actionType: 'A003', type:'humansensordata', actionStatus:'info', 	text:'Bedankt voor uw bijdrage', onEnd:'end', duration:60000}
 			, 'end': 	{'id':'end', 	actionType: 'end', type:'humansensordata', duration:0 }
