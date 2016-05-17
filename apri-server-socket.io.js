@@ -18,7 +18,7 @@ action.message	= {
 ioSockets.esSchedule	= [
 	{id:'S001', beginDT: '', endDT:'', limit:'minute'
 	, hours:{repeat:{begin:0,end:23,pulse:1},'8':true,'9':true,'10':true,'11':true,'12':true,'13':true,'14':true,'16':true,'18':true,'20':true,'21':true,'22':true,'23':true}
-	, minutes:{repeat:{begin:0,end:59,pulse:5}}
+	, minutes:{repeat:{begin:0,end:59,pulse:10}}
 	, seconds:{'0':true}
 	, esProcessId:'P001'}
 ];
