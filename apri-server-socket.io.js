@@ -320,7 +320,8 @@ var createCaseActions	= function(process, processAction, actionTime) {
 //	_action.caseTime		= ,dt.scheduleMinute
 	_action.startTime		= actionTime; 
 	var duration 			= processAction.duration!=undefined?processAction.duration:60000;
-	_action.endTime			= actionTime + duration  // default duration 1 minute
+	_action.nextActionTime	= actionTime + duration  // default duration 1 minute
+	_action.endTime			= nextActionTime - 100;  // space between end and starttime next action
 	_action.caseActionKey	= caseActionKey;
 	_action.active			= true;
 	ioSockets.esCaseAction[caseActionKey] = _action;
@@ -335,7 +336,7 @@ var createCaseActions	= function(process, processAction, actionTime) {
 		process.action[processAction.onEnd].esProcessId			= processAction.esProcessId;
 		process.action[processAction.onEnd].processKey			= processAction.processKey;
 		process.action[processAction.onEnd].caseActionKeyTime	= processAction.caseActionKeyTime;
-		createCaseActions(process, process.action[processAction.onEnd], _action.endTime); 
+		createCaseActions(process, process.action[processAction.onEnd], _action.nextActionTime); 
 	} 
 }
 
