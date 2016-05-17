@@ -336,7 +336,7 @@ var createCaseActions	= function(process, processAction, actionTime) {
 		process.action[processAction.onEnd].esProcessId			= processAction.esProcessId;
 		process.action[processAction.onEnd].processKey			= processAction.processKey;
 		process.action[processAction.onEnd].caseActionKeyTime	= processAction.caseActionKeyTime;
-		createCaseActions(process, process.action[processAction.onEnd], processAction.nextActionTime); 
+		createCaseActions(process, process.action[processAction.onEnd], _action.nextActionTime); 
 	} 
 }
 
