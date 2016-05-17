@@ -309,6 +309,7 @@ var createESCaseActions	= function() {
 // create case actions from scheduled process
 var createCaseActions	= function(process, processAction, actionTime) {
 	var _action				= {};
+	var 
 	
 	var caseActionKey		= processAction.esProcessId + '_' + processAction.actionId + '_' + actionTime; //+processAction.caseActionKeyTime; //
 	
@@ -321,7 +322,7 @@ var createCaseActions	= function(process, processAction, actionTime) {
 	_action.startTime		= actionTime; 
 	var duration 			= processAction.duration!=undefined?processAction.duration:60000;
 	_action.nextActionTime	= actionTime + duration  // default duration 1 minute
-	_action.endTime			= nextActionTime - 100;  // space between end and starttime next action
+	_action.endTime			= _action.nextActionTime - 100;  // space between end and starttime next action
 	_action.caseActionKey	= caseActionKey;
 	_action.active			= true;
 	ioSockets.esCaseAction[caseActionKey] = _action;
@@ -336,7 +337,7 @@ var createCaseActions	= function(process, processAction, actionTime) {
 		process.action[processAction.onEnd].esProcessId			= processAction.esProcessId;
 		process.action[processAction.onEnd].processKey			= processAction.processKey;
 		process.action[processAction.onEnd].caseActionKeyTime	= processAction.caseActionKeyTime;
-		createCaseActions(process, process.action[processAction.onEnd], _action.nextActionTime); 
+		createCaseActions(process, process.action[processAction.onEnd], processAction.nextActionTime); 
 	} 
 }
 
