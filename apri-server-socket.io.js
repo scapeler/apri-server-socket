@@ -309,8 +309,7 @@ var createESCaseActions	= function() {
 // create case actions from scheduled process
 var createCaseActions	= function(process, processAction, actionTime) {
 	var _action				= {};
-	var 
-	
+
 	var caseActionKey		= processAction.esProcessId + '_' + processAction.actionId + '_' + actionTime; //+processAction.caseActionKeyTime; //
 	
 	if (ioSockets.esCaseAction[caseActionKey]) return; // caseAction already created
