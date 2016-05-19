@@ -87,7 +87,7 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('aireassignal', function(data) {
         console.log('Data from AiREAS signal '+ data);
-		io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
+		io.sockets.emit('aireassignal', { data: data } );
     });
 	
 	socket.on('disconnect', function() {
