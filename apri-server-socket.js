@@ -83,6 +83,13 @@ io.sockets.on('connection', function (socket) {
 	io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
 	console.log('nr of connections:'+io.engine.clientsCount);
     socket.emit('connected', { message: 'welcome' });
+	
+	
+	socket.on('aireassignal', function(data) {
+        console.log('Data from AiREAS signal '+ data);
+		io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
+    });
+	
 	socket.on('disconnect', function() {
         console.log('user disconnected');
 		console.log('disconnect from '+ socket.request.connection.remoteAddress);
