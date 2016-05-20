@@ -87,7 +87,8 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('aireassignal', function(data) {
         console.log('Data from AiREAS signal '+ data);
-		io.sockets.emit('aireassignal', { data: data } );
+		//io.sockets.emit('aireassignal', { data: data } );
+		socket.broadcast.emit('aireassignal', { data: data } );
     });
 	
 	socket.on('disconnect', function() {
