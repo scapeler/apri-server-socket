@@ -74,8 +74,10 @@ var io = require('socket.io')({path: '/SCAPE604/socket.io'});
 console.log('listening to http://proxyintern: ' + apriConfig.systemListenPort);
 
 io.sockets.on('connection', function (socket) {
-	console.log('connect from '+ socket.request.connection.remoteAddress);
-	console.log('connect from2 '+ socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address);
+	var currTime = new Date();
+	console.log(currTime +': connect from '+ socket.request.connection.remoteAddress + ' / '+ socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address);
+//	console.log('connect from2 '+ socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address);
+	//console.dir(socket);
 	
 	
 //    socket.emit('humansensordata', { message: 'welcome humansensordata' });
