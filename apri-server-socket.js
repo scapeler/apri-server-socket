@@ -90,9 +90,19 @@ io.sockets.on('connection', function (socket) {
 	socket.on('aireassignal', function(data) {
         console.log('Data from AiREAS signal '+ data);
 		//io.sockets.emit('aireassignal', { data: data } );
-		socket.broadcast.emit('aireassignal', { data: data } );
-		
+		socket.broadcast.emit('aireassignal', { data: data } );		
     });
+	
+//---- Apri Agent Sensor System begin
+	socket.on('apriAgentBoot', function(data) {
+        console.log('ApriAgent boot message recieved ');
+		socket.emit('apriAgentBoot', data ); // pong, return message. 
+    });
+
+
+
+//------ Apri Agent Sensor System end
+
 	
 	socket.on('disconnect', function() {
         console.log('user disconnected');
