@@ -44,6 +44,8 @@ apriSensorLogPathRoot 	= systemFolderParent + '/log/apri-sensor/';
 apriSensorLogUnitFolder 				= 'unit';
 apriSensorLogUnitFolderPath 			= apriSensorLogPathRoot + apriSensorLogUnitFolder + '/';
 
+var unitIds	= {};
+
 // create subfolders
 try {fs.mkdirSync(apriSensorLogPathRoot);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
 try {fs.mkdirSync(apriSensorLogUnitFolderPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
@@ -78,6 +80,20 @@ var io = require('socket.io').listen(app.listen(apriConfig.systemListenPort),{
 });
 */
 
+
+// apri-sensor remote actions
+var sendReboot	= function(unitId) {
+	if (unitIds[unitId] == undefined || unitIds[unitId].socket == undefined) {
+		console.log('Action request for unit ' + unitId + ', unit not active');
+		return false;
+	}
+	unitIds[unitId].socket.emit('apriAgentAction', {action: "reboot" } );
+}
+
+
+
+// apri-sensor remote actions 
+
 var io = require('socket.io')({path: '/SCAPE604/socket.io'});
 //io.on('connection', function(socket){});
 
@@ -110,13 +126,26 @@ io.sockets.on('connection', function (socket) {
 		var apriSensorUnitId = 'unknown'; 
 		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
 			apriSensorUnitId	= data.unit.id;
+
+			unitIds[apriSensorUnitId]	= {};
+			if (unitIds[apriSensorUnitId]!= undefined && unitIds[apriSensorUnitId].nrOfConnections !=undefined) {
+				unitIds[apriSensorUnitId].nrOfConnections++;
+			} else {
+				unitIds[apriSensorUnitId].nrOfConnections	= 1;
+			}
+			unitIds[apriSensorUnitId].nrOfDisconnects		= 0;
+			
+			unitIds[apriSensorUnitId].socket	= socket;
 	        console.log('ApriAgent boot message recieved client: '+apriSensorUnitId );
 		} else {
 	        console.log('ApriAgent boot message recieved from unknown client ');
 		}
+		socket.apriSensorUnitId		= apriSensorUnitId;
+
 		socket.apriSensorLogPath	= apriSensorLogUnitFolderPath+apriSensorUnitId;
 		try {fs.mkdirSync(socket.apriSensorLogPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
 		var logFileName = new Date().toISOString();
+
 		socket.apriSensorLogFile	= socket.apriSensorLogPath+'/'+logFileName;
 		if (data.wifiScan != undefined ) {
 			if (data.wifiScan.wlan0 != undefined) {
@@ -165,6 +194,8 @@ io.sockets.on('connection', function (socket) {
 
 	
 	socket.on('disconnect', function() {
+		unitIds[socket.apriSensorUnitId].nrOfDisconnects++;
+		unitIds[socket.apriSensorUnitId].socket	= undefined;
         console.log('user disconnected');
 		console.log('disconnect from '+ socket.request.connection.remoteAddress);
 		io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
