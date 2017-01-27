@@ -41,13 +41,13 @@ var app = express();
 
 
 apriSensorLogPathRoot 	= systemFolderParent + '/log/apri-sensor/';
-unitFolder 				= 'unit';
-unitFolderPath 			= apriSensorLogPathRoot + unitFolder + '/';
+apriSensorLogUnitFolder 				= 'unit';
+apriSensorLogUnitFolderPath 			= apriSensorLogPathRoot + apriSensorLogUnitFolder + '/';
 
 // create subfolders
 try {fs.mkdirSync(apriSensorLogPathRoot);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
-try {fs.mkdirSync(unitFolderPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
-console.log(unitFolderPath);
+try {fs.mkdirSync(apriSensorLogUnitFolderPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
+//console.log(apriSensorLogUnitFolderPath);
 
 
 app.all('/*', function(req, res, next) {
@@ -108,7 +108,11 @@ io.sockets.on('connection', function (socket) {
         console.log('ApriAgent boot message recieved ');
 		console.dir(data);
 //		socket.emit('apriAgentBoot', data ); // pong, return message.
-		
+		var apriSensorUnitId = 'unknown'; 
+		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
+			apriSensorUnitId	= data.unit.id;
+		}
+		try {fs.mkdirSync(apriSensorLogUnitFolderPath+'/'+apriSensorUnitId);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
     });
 
 	socket.on('apriAgentPing', function(data) {
