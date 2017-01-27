@@ -105,18 +105,21 @@ io.sockets.on('connection', function (socket) {
 	
 //---- Apri Agent Sensor System begin
 	socket.on('apriAgentBoot', function(data) {
-        console.log('ApriAgent boot message recieved ');
-		console.dir(data);
+//		console.dir(data);
 //		socket.emit('apriAgentBoot', data ); // pong, return message.
 		var apriSensorUnitId = 'unknown'; 
 		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
 			apriSensorUnitId	= data.unit.id;
+	        console.log('ApriAgent boot message recieved client: '+apriSensorUnitId );
+		} else {
+	        console.log('ApriAgent boot message recieved from unknown client ');
 		}
-		socket.apriSensorLogPath	= apriSensorLogUnitFolderPath+'/'+apriSensorUnitId;
+		socket.apriSensorLogPath	= apriSensorLogUnitFolderPath+apriSensorUnitId;
 		try {fs.mkdirSync(socket.apriSensorLogPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
 		var logFileName = new Date().toISOString();
-		socket.apriSensorLogFileName	= logFileName;
-		console.log(socket.apriSensorLogPath+'/'+socket.apriSensorLogFileName);
+		socket.apriSensorLogFile	= socket.apriSensorLogPath+'/'+logFileName;
+		fs.writeFileSync(socket.apriSensorLogFile+'_boot', data);
+		//console.log(socket.apriSensorLogPath+'/'+socket.apriSensorLogFileName);
     });
 
 	socket.on('apriAgentPing', function(data) {
