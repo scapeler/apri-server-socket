@@ -118,6 +118,19 @@ io.sockets.on('connection', function (socket) {
 		try {fs.mkdirSync(socket.apriSensorLogPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
 		var logFileName = new Date().toISOString();
 		socket.apriSensorLogFile	= socket.apriSensorLogPath+'/'+logFileName;
+		if (data.wifiScan != undefined ) {
+			if (data.wifiScan.wlan0 != undefined) {
+				var tmpWifiDataWlan0	= data.wifiScan.wlan0.toString();
+				fs.writeFileSync(socket.apriSensorLogFile+'_wifi_wlan0', tmpWifiDataWlan0 );
+				data.wifiScan.wlan0	= undefined;
+			}
+			if (data.wifiScan.wlan1 != undefined) {
+				var tmpWifiDataWlan1	= data.wifiScan.wlan1.toString();
+				fs.writeFileSync(socket.apriSensorLogFile+'_wifi_wlan1', tmpWifiDataWlan1 );
+				data.wifiScan.wlan1	= undefined;
+			}
+		}
+
 		var tmpWifiData	= data.wifiScan.toString();
 		fs.writeFileSync(socket.apriSensorLogFile+'_wifi', tmpWifiData );
 		data.wifiScan	= undefined;
