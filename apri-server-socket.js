@@ -112,7 +112,11 @@ io.sockets.on('connection', function (socket) {
 		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
 			apriSensorUnitId	= data.unit.id;
 		}
-		try {fs.mkdirSync(apriSensorLogUnitFolderPath+'/'+apriSensorUnitId);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
+		socket.apriSensorLogPath	= apriSensorLogUnitFolderPath+'/'+apriSensorUnitId;
+		try {fs.mkdirSync(socket.apriSensorLogPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
+		var logFileName = new Date().toISOString();
+		socket.apriSensorLogFileName	= logFileName;
+		console.log(socket.apriSensorLogPath+'/'+socket.apriSensorLogFileName);
     });
 
 	socket.on('apriAgentPing', function(data) {
