@@ -118,7 +118,8 @@ io.sockets.on('connection', function (socket) {
 		try {fs.mkdirSync(socket.apriSensorLogPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
 		var logFileName = new Date().toISOString();
 		socket.apriSensorLogFile	= socket.apriSensorLogPath+'/'+logFileName;
-		fs.writeFileSync(socket.apriSensorLogFile+'_boot', data);
+		var tmpData	= JSON.stringify(data);
+		fs.writeFileSync(socket.apriSensorLogFile+'_boot', tmpData );
 		//console.log(socket.apriSensorLogPath+'/'+socket.apriSensorLogFileName);
     });
 
