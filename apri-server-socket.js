@@ -196,7 +196,8 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function() {
 		
 		if (socket.apriSensorUnitId != undefined && unitIds[socket.apriSensorUnitId]!=undefined)
-		// && unitIds[socket.apriSensorUnitId].nrOfDisconnects != undefined) {
+		// && unitIds[socket.apriSensorUnitId].nrOfDisconnects != undefined) 
+		{
 			unitIds[socket.apriSensorUnitId].nrOfDisconnects++;
 			unitIds[socket.apriSensorUnitId].socket	= undefined;
 		}	
