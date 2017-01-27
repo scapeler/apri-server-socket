@@ -194,8 +194,12 @@ io.sockets.on('connection', function (socket) {
 
 	
 	socket.on('disconnect', function() {
-		unitIds[socket.apriSensorUnitId].nrOfDisconnects++;
-		unitIds[socket.apriSensorUnitId].socket	= undefined;
+		
+		if (socket.apriSensorUnitId != undefined && unitIds[socket.apriSensorUnitId]!=undefined)
+		// && unitIds[socket.apriSensorUnitId].nrOfDisconnects != undefined) {
+			unitIds[socket.apriSensorUnitId].nrOfDisconnects++;
+			unitIds[socket.apriSensorUnitId].socket	= undefined;
+		}	
         console.log('user disconnected');
 		console.log('disconnect from '+ socket.request.connection.remoteAddress);
 		io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
