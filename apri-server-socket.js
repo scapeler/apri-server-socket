@@ -96,9 +96,30 @@ io.sockets.on('connection', function (socket) {
 //---- Apri Agent Sensor System begin
 	socket.on('apriAgentBoot', function(data) {
         console.log('ApriAgent boot message recieved ');
+		console.dir(data);
 		socket.emit('apriAgentBoot', data ); // pong, return message. 
     });
 
+	socket.on('apriAgentPing', function(data) {
+        console.log('ApriAgent Ping message recieved ');
+		socket.emit('apriAgentPong', data ); // pong, return message. 
+    });
+	socket.on('apriAgentPong', function(data) {
+        console.log('ApriAgent Pong message recieved ');
+    });
+
+	socket.on('apriAgentTick', function(data) {
+        console.log('ApriAgent Tick recieved ');  // heartbeat tick
+    });
+
+	socket.on('apriAgentCliMsg', function(data) {
+        console.log('ApriAgent client message recieved ');
+		socket.emit('apriAgentCliMsg', data ); // pong, return message. 
+    });
+	socket.on('apriAgentSrvMsg', function(data) {
+        console.log('ApriAgent server message recieved ');
+		socket.emit('apriAgentSrvMsg', data ); // pong, return message. 
+    });
 
 
 //------ Apri Agent Sensor System end
