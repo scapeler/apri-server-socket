@@ -97,7 +97,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('apriAgentBoot', function(data) {
         console.log('ApriAgent boot message recieved ');
 		console.dir(data);
-		socket.emit('apriAgentBoot', data ); // pong, return message.  
+		socket.emit('apriAgentBoot', data ); // pong, return message.
     });
 
 	socket.on('apriAgentPing', function(data) {
