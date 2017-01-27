@@ -40,6 +40,16 @@ var app = express();
 // **********************************************************************************
 
 
+apriSensorLogPathRoot 	= systemFolderParent + '/log/apri-sensor/';
+unitFolder 				= 'unit';
+unitFolderPath 			= apriSensorLogPathRoot + unitFolder + '/';
+
+// create subfolders
+try {fs.mkdirSync(apriSensorLogPathRoot);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
+try {fs.mkdirSync(unitFolderPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
+console.log(unitFolderPath);
+
+
 app.all('/*', function(req, res, next) {
   console.log("app.all/: " + req.url + " ; systemCode: " + apriConfig.systemCode );
 //  res.header("Access-Control-Allow-Origin", "*");
@@ -97,7 +107,8 @@ io.sockets.on('connection', function (socket) {
 	socket.on('apriAgentBoot', function(data) {
         console.log('ApriAgent boot message recieved ');
 		console.dir(data);
-		socket.emit('apriAgentBoot', data ); // pong, return message.
+//		socket.emit('apriAgentBoot', data ); // pong, return message.
+		
     });
 
 	socket.on('apriAgentPing', function(data) {
