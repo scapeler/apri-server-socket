@@ -193,7 +193,7 @@ io.sockets.on('connection', function (socket) {
 		console.log('Apri Agent Manager action recieved: ' + data.action);
 		//console.dir(data);
 		if (data.action == 'getClients') {
-			socket.emit('apriAgentAction', data: { iunitIds: unitIds});
+			socket.emit('apriAgentAction', { iunitIds: unitIds});
 		};
 
 	});
