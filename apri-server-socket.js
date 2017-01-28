@@ -120,6 +120,7 @@ io.sockets.on('connection', function (socket) {
     });
 	
 //---- Apri Agent Sensor System begin
+
 	socket.on('apriAgentBoot', function(data) {
 //		console.dir(data);
 //		socket.emit('apriAgentBoot', data ); // pong, return message.
@@ -188,6 +189,15 @@ io.sockets.on('connection', function (socket) {
         console.log('ApriAgent server message recieved ');
 		socket.emit('apriAgentSrvMsg', data ); // pong, return message. 
     });
+	socket.on('apriAgentAction', function(data) {  // pong message from socket.io server
+		console.log('Apri Agent Manager action recieved: ' + data.action);
+		//console.dir(data);
+		if (data.action == 'getClients') {
+			socket.emit('apriAgentAction', data: { iunitIds: unitIds});
+		};
+
+	});
+
 
 
 //------ Apri Agent Sensor System end
