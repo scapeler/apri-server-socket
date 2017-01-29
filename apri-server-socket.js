@@ -195,8 +195,8 @@ io.sockets.on('connection', function (socket) {
 		if (data.action == 'getClients') {
 			var _unitIds	= {};
 			for (var key in unitIds) {
+				var _id = key;
 				if (_unitIds[_id].socket != undefined) {
-					var _id = key;
 					_unitIds[_id]	= {};
 					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
 					_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects; 
