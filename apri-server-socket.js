@@ -193,8 +193,6 @@ io.sockets.on('connection', function (socket) {
 		console.log('Apri Agent Manager action received: ' + data.action);
 		//console.dir(data);
 		if (data.action == 'getClients') {
-			console.log("Returning unit id's");
-			console.dir(unitIds);
 			var _unitIds	= {};
 			for (var key in unitIds) {
 				var _id = unitIds[key];
@@ -202,6 +200,8 @@ io.sockets.on('connection', function (socket) {
 				_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
 				_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects; 
 			}
+			console.log("Returning unit id's");
+			console.dir(_unitIds);
 			socket.emit('apriAgentAction', { unitIds: _unitIds}); //return active units
 		};
 	});
