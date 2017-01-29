@@ -202,7 +202,7 @@ io.sockets.on('connection', function (socket) {
 			}
 			console.log("Returning unit id's");
 			console.dir(_unitIds);
-			socket.emit('apriAgentAction', { unitIds: _unitIds}); //return active units
+			socket.emit('apriAgentActionResponse', { action: data.action, unitIds: _unitIds}); //return active units
 		};
 	});
 
