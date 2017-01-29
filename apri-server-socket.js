@@ -208,7 +208,7 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('apriAgentActionResponse', { action: data.action, unitIds: _unitIds}); //return active units
 		};
 		if (data.action == 'reboot') {  // reboot a specified unit (Raspberry Pi
-			if (unitIds[data.unitId] != undefined]) {
+			if (unitIds[data.unitId] != undefined) {
 				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );	
 				unitIds[data.unitId].socket.Socket.emit('apriClientAction', data);
 			}
