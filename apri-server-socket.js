@@ -207,6 +207,24 @@ io.sockets.on('connection', function (socket) {
 			console.dir(_unitIds);
 			socket.emit('apriAgentActionResponse', { action: data.action, unitIds: _unitIds}); //return active units
 		};
+		if (data.action == 'reboot') {  // reboot a specified unit (Raspberry Pi
+			if (unitIds[data.unitId] != undefined]) {
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );	
+				unitIds[data.unitId].socket.Socket.emit('apriClientAction', data);
+			}
+			for (var key in unitIds) {
+				var _id = key;
+				console.dir(unitIds[key]);
+				if (unitIds[key].socket != undefined) {
+					_unitIds[_id]	= {};
+					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
+					_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects; 
+				}
+			}
+			console.log("Returning unit id's");
+			console.dir(_unitIds);
+			socket.emit('apriAgentActionResponse', { action: data.action, unitId: _unitIds}); //return active units
+		};
 	});
 
 
