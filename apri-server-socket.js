@@ -211,7 +211,7 @@ io.sockets.on('connection', function (socket) {
 			console.log('Unit id %s', data.unitId );
 			if (unitIds[data.unitId] != undefined) {
 				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );	
-				unitIds[data.unitId].socket.Socket.emit('apriClientAction', data);
+				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'reboot initiated' }); //return active units
 		};
