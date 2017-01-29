@@ -190,12 +190,13 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('apriAgentSrvMsg', data ); // pong, return message. 
     });
 	socket.on('apriAgentAction', function(data) {  // pong message from socket.io server
-		console.log('Apri Agent Manager action recieved: ' + data.action);
+		console.log('Apri Agent Manager action received: ' + data.action);
 		//console.dir(data);
 		if (data.action == 'getClients') {
-			//socket.send('apriAgentAction', { iunitIds: unitIds});
+			console.log("Returning unit id's");
+			console.dir(unitIds);
+			socket.emit('apriAgentAction', { iunitIds: unitIds}); //return 
 		};
-
 	});
 
 
