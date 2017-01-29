@@ -196,6 +196,7 @@ io.sockets.on('connection', function (socket) {
 			var _unitIds	= {};
 			for (var key in unitIds) {
 				var _id = key;
+				console.dir(unitIds[key]);
 				if (_unitIds[_id].socket != undefined) {
 					_unitIds[_id]	= {};
 					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
