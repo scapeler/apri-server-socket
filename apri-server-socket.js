@@ -128,13 +128,14 @@ io.sockets.on('connection', function (socket) {
 		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
 			apriSensorUnitId	= data.unit.id;
 
-			unitIds[apriSensorUnitId]	= {};
+			
 			if (unitIds[apriSensorUnitId]!= undefined && unitIds[apriSensorUnitId].nrOfConnections !=undefined) {
 				unitIds[apriSensorUnitId].nrOfConnections++;
 			} else {
+				unitIds[apriSensorUnitId]	= {};
 				unitIds[apriSensorUnitId].nrOfConnections	= 1;
+				unitIds[apriSensorUnitId].nrOfDisconnects	= 0;
 			}
-			unitIds[apriSensorUnitId].nrOfDisconnects		= 0;
 			
 			unitIds[apriSensorUnitId].socket	= socket;
 	        console.log('ApriAgent boot message recieved client: '+apriSensorUnitId );
@@ -228,12 +229,12 @@ io.sockets.on('connection', function (socket) {
 		// && unitIds[socket.apriSensorUnitId].nrOfDisconnects != undefined) 
 		{
 			unitIds[socket.apriSensorUnitId].nrOfDisconnects++;
-			unitIds[socket.apriSensorUnitId].socket	= undefined;
+			//unitIds[socket.apriSensorUnitId].socket	= undefined;
 		}	
         console.log('user disconnected');
 		console.log('disconnect from '+ socket.request.connection.remoteAddress);
-		io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
-		console.log('nr of connections:'+io.engine.clientsCount);
+		//io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
+		//console.log('nr of connections:'+io.engine.clientsCount);
     });
 //    socket.on('send', function (data) {
 //        io.sockets.emit('message', data);
