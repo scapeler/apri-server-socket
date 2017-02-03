@@ -137,6 +137,12 @@ io.sockets.on('connection', function (socket) {
 				unitIds[apriSensorUnitId].nrOfDisconnects	= 0;
 			}
 			
+			unitIds[apriSensorUnitId].macAddress = data.macAddress;
+			unitIds[apriSensorUnitId].ipAddress = data.ipAddress;
+			unitIds[apriSensorUnitId].usbPorts = data.usbPorts;
+			unitIds[apriSensorUnitId].unit = data.unit;
+			
+			
 			unitIds[apriSensorUnitId].socket	= socket;
 	        console.log('ApriAgent boot message recieved client: '+apriSensorUnitId );
 		} else {
@@ -203,6 +209,7 @@ io.sockets.on('connection', function (socket) {
 					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
 					_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects; 
 				}
+				_unitIds[_id].ipAddress	= unitIds[key].ipAddress;
 			}
 			console.log("Returning unit id's");
 			console.dir(_unitIds);
