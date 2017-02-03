@@ -209,7 +209,11 @@ io.sockets.on('connection', function (socket) {
 					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
 					_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects; 
 				}
+				_unitIds[_id].macAddress= unitIds[key].macAddress;
 				_unitIds[_id].ipAddress	= unitIds[key].ipAddress;
+				_unitIds[_id].usbPorts	= unitIds[key].usbPorts;
+				_unitIds[_id].unit		= unitIds[key].unit;
+			
 			}
 			console.log("Returning unit id's");
 			console.dir(_unitIds);
