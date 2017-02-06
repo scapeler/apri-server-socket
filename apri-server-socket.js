@@ -122,7 +122,7 @@ io.sockets.on('connection', function (socket) {
 //---- Apri Agent Sensor System begin
 
 	socket.on('apriAgentBoot', function(data) {
-		console.dir(data);
+		//console.dir(data);
 //		socket.emit('apriAgentBoot', data ); // pong, return message.
 		var apriSensorUnitId = 'unknown'; 
 		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
