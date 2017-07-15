@@ -237,6 +237,16 @@ io.sockets.on('connection', function (socket) {
 		};
 	});
 
+	socket.on('apriClientActionResponse', function(data) {  // response from action request 
+		console.log('apriClientActionResponse unit id: %s %s', data.unitId, data.action );
+		if (data.device != undefined) {
+			console.log('apriClientActionResponse device: %s %s', data.unitId, data.device );
+		} 
+		if (data.usbInfo != undefined) {
+			console.log('apriClientActionResponse usbInfo: %s %s', data.unitId, data.usbInfo );
+		} 
+
+	});
 
 
 //------ Apri Agent Sensor System end
