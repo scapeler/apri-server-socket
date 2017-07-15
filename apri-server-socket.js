@@ -219,6 +219,14 @@ io.sockets.on('connection', function (socket) {
 			console.dir(_unitIds);
 			socket.emit('apriAgentActionResponse', { action: data.action, unitIds: _unitIds}); //return active units
 		};
+		if (data.action == 'getClientUsbInfo') {  // get usb info from a specified unit (Raspberry Pi)
+			console.log('getClientUsbInfo unit id: %s', data.unitId );
+			if (unitIds[data.unitId] != undefined) {
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );	
+				unitIds[data.unitId].socket.emit('apriClientAction', data);
+			}
+			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientUsbInfo initiated' }); 
+		};
 		if (data.action == 'reboot') {  // reboot a specified unit (Raspberry Pi
 			console.log('Unit id %s', data.unitId );
 			if (unitIds[data.unitId] != undefined) {
