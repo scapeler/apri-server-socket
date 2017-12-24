@@ -2,7 +2,7 @@
 ** Module: apri-sensor-action
 **
 ** (scheduled) action like automatic reboot 
-**  
+**  param 3 = testnode; param 4= actionnode; param 5=action
 **
 
 test door ophalen resultaat:
@@ -174,6 +174,7 @@ https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=tran
 		param.offering				= 'offering_0439_initial'; 
 //		param.foi					= 'scapeler_dylos_SCRP000000004123e145'; //,scapeler_dylos_SCRP00000000b7e92a99_DC1100'; //'scapeler_dylos_SCRP00000000b7e92a99_DC1100'; //'apri-sensor-dylos_SCRP000000004123e145'; 
 		param.foi					= "apri-sensor-pmsa003_"+_options.argvParams[3]; //'scapeler_dylos_SCRP00000000b7e92a99_DC1100'; 
+		// apri-sensor-pmsa003_SCWMA020A62C8201
 		param.observation			= 'apri-sensor-pmsa003-concPM2_5_CF1'; //'apri-sensor-dylos-pm25'; 
 		param.startDateTimeFilter	= startDateTimeFilter;
 		param.endDateTimeFilter		= endDateTimeFilter;
@@ -434,12 +435,12 @@ https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=tran
 		}
 		//console.log(_data);
 		if (_data.length==0) {  // no measurements found --> action
-			if (_options.argvParams[4] == "reboot") {
-				console.log('Action initiated for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]);
+			if (_options.argvParams[5] == "reboot") {
+				console.log('Action initiated for ' + _options.argvParams[3]+' / ' ++ _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 				
 				//	https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=00000000B7E92a99x
 				var _url = openiodUrl + 'openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=' +
-					_options.argvParams[3].substr(4);
+					_options.argvParams[4].substr(4);
 				console.log(_url);	
 				let body = [];
 				request.get(_url)
@@ -460,9 +461,9 @@ https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=tran
 				
 				return;		
 			}
-			console.log('Invalid action for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]);
+			console.log('Invalid action for ' + _options.argvParams[3]+' / ' ++ _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 		}
-		console.log('No action taken for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]);
+		console.log('No action taken for ' + _options.argvParams[3]+' / ' ++ _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 		
 	 return;  
 	} 
