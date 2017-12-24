@@ -461,9 +461,9 @@ https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=tran
 				
 				return;		
 			}
-			console.log('Invalid action for ' + _options.argvParams[3]+' / ' ++ _options.argvParams[4]+' -> ' + _options.argvParams[5]);
+			console.log('Invalid action for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 		}
-		console.log('No action taken for ' + _options.argvParams[3]+' / ' ++ _options.argvParams[4]+' -> ' + _options.argvParams[5]);
+		console.log('No action taken for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 		
 	 return;  
 	} 
