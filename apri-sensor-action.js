@@ -439,7 +439,7 @@ https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=tran
 				console.log('Action initiated for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 				
 				//	https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=00000000B7E92a99x
-				var _url = openiodUrl + 'openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=' +
+				var _url = openiodUrl + '/openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=' +
 					_options.argvParams[4].substr(4);
 				console.log(_url);	
 				let body = [];
