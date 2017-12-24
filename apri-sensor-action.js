@@ -436,7 +436,7 @@ https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=tran
 		//console.log(_data);
 		if (_data.length==0) {  // no measurements found --> action
 			if (_options.argvParams[5] == "reboot") {
-				console.log('Action initiated for ' + _options.argvParams[3]+' / ' ++ _options.argvParams[4]+' -> ' + _options.argvParams[5]);
+				console.log('Action initiated for ' + _options.argvParams[3]+' / ' + _options.argvParams[4]+' -> ' + _options.argvParams[5]);
 				
 				//	https://openiod.org/SCAPE604/openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=00000000B7E92a99x
 				var _url = openiodUrl + 'openiod?SERVICE=WPS&REQUEST=Execute&identifier=apri-sensor-manager&action=reboot&unitId=' +
