@@ -1,7 +1,7 @@
 /*
 ** Module: apri-server-socket
 **
-** Main system module for handling web-sockets 
+** Main system module for handling web-sockets
 **
 */
 // activate init process config-main
@@ -69,7 +69,7 @@ app.get('/'+apriConfig.systemCode+'/', function(req, res) {
 app.get('/'+apriConfig.systemCode+'/eventsource/:eventsource', function(req, res) {
 	//getLocalFile(req, res, {contentType:'text/css'});
 	console.log('EventSource action from '+ req.params.eventsource );
-		
+
 });
 */
 
@@ -92,7 +92,7 @@ var sendReboot	= function(unitId) {
 
 
 
-// apri-sensor remote actions 
+// apri-sensor remote actions
 
 var io = require('socket.io')({path: '/SCAPE604/socket.io'});
 //io.on('connection', function(socket){});
@@ -104,31 +104,31 @@ io.sockets.on('connection', function (socket) {
 	console.log(currTime +': connect from '+ socket.request.connection.remoteAddress + ' / '+ socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address);
 //	console.log('connect from2 '+ socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address);
 	//console.dir(socket);
-	
-	
+
+
 //    socket.emit('humansensordata', { message: 'welcome humansensordata' });
 	apriSocketIO.sendActiveActions(socket);
 	io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
 	console.log('nr of connections:'+io.engine.clientsCount);
     socket.emit('connected', { message: 'welcome' });
-	
-	
+
+
 	socket.on('aireassignal', function(data) {
         console.log('Data from AiREAS signal '+ data);
 		//io.sockets.emit('aireassignal', { data: data } );
-		socket.broadcast.emit('aireassignal', { data: data } );		
+		socket.broadcast.emit('aireassignal', { data: data } );
     });
-	
+
 //---- Apri Agent Sensor System begin
 
 	socket.on('apriAgentBoot', function(data) {
 		//console.dir(data);
 //		socket.emit('apriAgentBoot', data ); // pong, return message.
-		var apriSensorUnitId = 'unknown'; 
+		var apriSensorUnitId = 'unknown';
 		if (data  != undefined && data.unit != undefined && data.unit.id != undefined) {
 			apriSensorUnitId	= data.unit.id;
 
-			
+
 			if (unitIds[apriSensorUnitId]!= undefined && unitIds[apriSensorUnitId].nrOfConnections !=undefined) {
 				unitIds[apriSensorUnitId].nrOfConnections++;
 			} else {
@@ -136,13 +136,13 @@ io.sockets.on('connection', function (socket) {
 				unitIds[apriSensorUnitId].nrOfConnections	= 1;
 				unitIds[apriSensorUnitId].nrOfDisconnects	= 0;
 			}
-			
+
 			unitIds[apriSensorUnitId].macAddress = data.macAddress;
 			unitIds[apriSensorUnitId].ipAddress = data.ipAddress;
 			unitIds[apriSensorUnitId].usbPorts = data.usbPorts;
 			unitIds[apriSensorUnitId].unit = data.unit;
-			
-			
+
+
 			unitIds[apriSensorUnitId].socket	= socket;
 	        console.log('ApriAgent boot message recieved client: '+apriSensorUnitId );
 		} else {
@@ -178,7 +178,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('apriAgentPing', function(data) {
         console.log('ApriAgent Ping message recieved ');
-		socket.emit('apriAgentPong', data ); // pong, return message. 
+		socket.emit('apriAgentPong', data ); // pong, return message.
     });
 	socket.on('apriAgentPong', function(data) {
         console.log('ApriAgent Pong message recieved ');
@@ -190,11 +190,11 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('apriAgentCliMsg', function(data) {
         console.log('ApriAgent client message recieved ');
-		socket.emit('apriAgentCliMsg', data ); // pong, return message. 
+		socket.emit('apriAgentCliMsg', data ); // pong, return message.
     });
 	socket.on('apriAgentSrvMsg', function(data) {
         console.log('ApriAgent server message recieved ');
-		socket.emit('apriAgentSrvMsg', data ); // pong, return message. 
+		socket.emit('apriAgentSrvMsg', data ); // pong, return message.
     });
 	socket.on('apriAgentAction', function(data) {  // pong message from socket.io server
 		console.log('Apri Agent Manager action received: ' + data.action);
@@ -206,14 +206,14 @@ io.sockets.on('connection', function (socket) {
 				//console.dir(unitIds[key]);
 				if (unitIds[key].socket != undefined) {
 					_unitIds[_id]	= {};
-					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections; 
-					_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects; 
+					_unitIds[_id].nrOfConnections	= unitIds[key].nrOfConnections;
+					_unitIds[_id].nrOfDisconnects	= unitIds[key].nrOfDisconnects;
 				}
 				_unitIds[_id].macAddress= unitIds[key].macAddress;
 				_unitIds[_id].ipAddress	= unitIds[key].ipAddress;
 				_unitIds[_id].usbPorts	= unitIds[key].usbPorts;
 				_unitIds[_id].unit		= unitIds[key].unit;
-			
+
 			}
 			console.log("Returning unit id's");
 			console.dir(_unitIds);
@@ -222,44 +222,60 @@ io.sockets.on('connection', function (socket) {
 		if (data.action == 'getClientUsbInfo') {  // get usb info from a specified unit (Raspberry Pi)
 			console.log('getClientUsbInfo unit id: %s', data.unitId );
 			if (unitIds[data.unitId] != undefined) {
-				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );	
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
-			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientUsbInfo initiated' }); 
+			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientUsbInfo initiated' });
+		};
+    if (data.action == 'getClientLsUsbInfo') {  // get lsusb info from a specified unit (Raspberry Pi)
+			console.log('getClientLsUsbInfo unit id: %s', data.unitId );
+			if (unitIds[data.unitId] != undefined) {
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				unitIds[data.unitId].socket.emit('apriClientAction', data);
+			}
+			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientLsUsbInfo initiated' });
+		};
+    if (data.action == 'getClientLsUsbvInfo') {  // get lsusb info from a specified unit (Raspberry Pi)
+			console.log('getClientLsUsbvInfo unit id: %s', data.unitId );
+			if (unitIds[data.unitId] != undefined) {
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				unitIds[data.unitId].socket.emit('apriClientAction', data);
+			}
+			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientLsUsbvInfo initiated' });
 		};
 		if (data.action == 'reboot') {  // reboot a specified unit (Raspberry Pi
 			console.log('Unit id %s', data.unitId );
 			if (unitIds[data.unitId] != undefined) {
-				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );	
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'reboot initiated' }); //return active units
 		};
 	});
 
-	socket.on('apriClientActionResponse', function(data) {  // response from action request 
+	socket.on('apriClientActionResponse', function(data) {  // response from action request
 		console.log('apriClientActionResponse unit id: %s %s', data.unitId, data.action );
 		if (data.device != undefined) {
 			console.log('apriClientActionResponse device: %s %s', data.unitId, data.device );
-		} 
+		}
 		if (data.usbInfo != undefined) {
 			console.log('apriClientActionResponse usbInfo: %s %s', data.unitId, data.usbInfo );
-		} 
+		}
 
 	});
 
 
 //------ Apri Agent Sensor System end
 
-	
+
 	socket.on('disconnect', function() {
-		
+
 		if (socket.apriSensorUnitId != undefined && unitIds[socket.apriSensorUnitId]!=undefined)
-		// && unitIds[socket.apriSensorUnitId].nrOfDisconnects != undefined) 
+		// && unitIds[socket.apriSensorUnitId].nrOfDisconnects != undefined)
 		{
 			unitIds[socket.apriSensorUnitId].nrOfDisconnects++;
 			//unitIds[socket.apriSensorUnitId].socket	= undefined;
-		}	
+		}
         console.log('user disconnected');
 		console.log('disconnect from '+ socket.request.connection.remoteAddress);
 		//io.sockets.emit('info', { nrOfConnections: io.engine.clientsCount } );
@@ -268,13 +284,10 @@ io.sockets.on('connection', function (socket) {
 //    socket.on('send', function (data) {
 //        io.sockets.emit('message', data);
 //    });
-	
+
 });
 
 io.listen(apriConfig.systemListenPort);
 
 
 apriSocketIO.streamEvents(io.sockets, 'humansensor');
-
-
-
