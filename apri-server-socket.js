@@ -263,6 +263,11 @@ io.sockets.on('connection', function (socket) {
 		}
 
 	});
+  socket.on('apriSocketBinary', function(data) {  // response from action request
+		console.log('apriSocketBinary');
+    var bufView = new Uint8Array(data);
+    console.log(bufView)
+	});
 
 
 //------ Apri Agent Sensor System end
