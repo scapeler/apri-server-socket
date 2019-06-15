@@ -243,6 +243,14 @@ io.sockets.on('connection', function (socket) {
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientLsUsbvInfo initiated' });
 		};
+    if (data.action == 'getClientCmd') {  // get command info from a specified unit (Raspberry Pi)
+			console.log('getClientCmd unit id: %s', data.unitId );
+			if (unitIds[data.unitId] != undefined) {
+				console.log('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				unitIds[data.unitId].socket.emit('apriClientAction', data);
+			}
+			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientCmd initiated' });
+		};
 		if (data.action == 'reboot') {  // reboot a specified unit (Raspberry Pi
 			console.log('Unit id %s', data.unitId );
 			if (unitIds[data.unitId] != undefined) {
