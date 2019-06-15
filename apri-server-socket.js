@@ -278,7 +278,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('apriSocketBinary', function(data) {  // response from action request
 		console.log('apriSocketBinary');
     var bufView = new Uint8Array(data);
-    var str = arraybuffer2string(bufview)
+    var str = arraybuffer2string(bufView)
     console.log(str)
 	});
 
