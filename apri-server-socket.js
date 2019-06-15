@@ -253,6 +253,18 @@ io.sockets.on('connection', function (socket) {
 		};
 	});
 
+  function arraybuffer2string(buf) {
+    return String.fromCharCode.apply(null, new Uint8Array(buf));
+  }
+  function str2ab(str) {
+    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i < strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
 	socket.on('apriClientActionResponse', function(data) {  // response from action request
 		console.log('apriClientActionResponse unit id: %s %s', data.unitId, data.action );
 		if (data.device != undefined) {
@@ -261,15 +273,12 @@ io.sockets.on('connection', function (socket) {
 		if (data.usbInfo != undefined) {
 			console.log('apriClientActionResponse usbInfo: %s %s', data.unitId, data.usbInfo );
 		}
-
 	});
+
   socket.on('apriSocketBinary', function(data) {  // response from action request
 		console.log('apriSocketBinary');
     var bufView = new Uint8Array(data);
-    var str = '';
-    for(var i=0;i<data.length;i++){
-      str=str+bufView[i];
-    }
+    var str = arraybuffer2string(bufview)
     console.log(str)
 	});
 
