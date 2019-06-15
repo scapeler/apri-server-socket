@@ -266,7 +266,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('apriSocketBinary', function(data) {  // response from action request
 		console.log('apriSocketBinary');
     var bufView = new Uint8Array(data);
-    console.log(bufView.toString())
+    var str = '';
+    for(var i=0;i<data.length;i++){
+      str=str+bufView[i];
+    }
+    console.log(str)
 	});
 
 
