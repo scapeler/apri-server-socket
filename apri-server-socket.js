@@ -49,6 +49,7 @@ var unitIds	= {};
 // create subfolders
 try {fs.mkdirSync(apriSensorLogPathRoot);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
 try {fs.mkdirSync(apriSensorLogUnitFolderPath);} catch (e) {};//console.log('ERROR: no tmp folder found, batch run aborted.'); return } ;
+
 //console.log(apriSensorLogUnitFolderPath);
 
 

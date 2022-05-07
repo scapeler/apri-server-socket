@@ -1,0 +1,9 @@
+[Unit]
+Desription=SCAPE604-apri-server-socket-service - start or restart service, respawn
+After=network.target
+[Service]
+ExecStart=/opt/SCAPE604/apri-server-socket/apri-server-socket.sh /opt/SCAPE604/log/SCAPE604-apri-server-socket.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
