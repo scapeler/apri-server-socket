@@ -212,41 +212,41 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('apriAgentActionResponse', { action: data.action, unitIds: _unitIds}); //return active units
 		};
 		if (data.action == 'getClientUsbInfo') {  // get usb info from a specified unit (Raspberry Pi)
-			logger.info('getClientUsbInfo unit id: %s', data.unitId );
+			logger.info('getClientUsbInfo unit id: '+ data.unitId );
 			if (unitIds[data.unitId] != undefined) {
-				logger.info('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				logger.info('ApriClientAction initiated: '+ data.action + 'for unit '+ data.unitId );
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientUsbInfo initiated' });
 		};
     if (data.action == 'getClientLsUsbInfo') {  // get lsusb info from a specified unit (Raspberry Pi)
-			logger.info('getClientLsUsbInfo unit id: %s', data.unitId );
+			logger.info('getClientLsUsbInfo unit id: '+ data.unitId  );
 			if (unitIds[data.unitId] != undefined) {
-				logger.info('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				logger.info('ApriClientAction initiated:  '+ data.action + 'for unit '+ data.unitId);
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientLsUsbInfo initiated' });
 		};
     if (data.action == 'getClientLsUsbvInfo') {  // get lsusb info from a specified unit (Raspberry Pi)
-			logger.info('getClientLsUsbvInfo unit id: %s', data.unitId );
+			logger.info('getClientLsUsbvInfo unit id: '+ data.unitId  );
 			if (unitIds[data.unitId] != undefined) {
-				logger.info('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				logger.info('ApriClientAction initiated:  '+ data.action + 'for unit '+ data.unitId );
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientLsUsbvInfo initiated' });
 		};
     if (data.action == 'getClientCmd') {  // get command info from a specified unit (Raspberry Pi)
-			logger.info('getClientCmd unit id: %s', data.unitId );
+			logger.info('getClientCmd unit id: '+ data.unitId  );
 			if (unitIds[data.unitId] != undefined) {
-				logger.info('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				logger.info('ApriClientAction initiated: '+ data.action + 'for unit '+ data.unitId);
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'getClientCmd initiated' });
 		};
 		if (data.action == 'reboot') {  // reboot a specified unit (Raspberry Pi
-			logger.info('Unit id %s', data.unitId );
+			logger.info('Unit id '+ data.unitId );
 			if (unitIds[data.unitId] != undefined) {
-				logger.info('ApriClientAction initiated: %s for unit %s', data.action, data.unitId );
+				logger.info('ApriClientAction initiated:  '+ data.action + 'for unit '+ data.unitId );
 				unitIds[data.unitId].socket.emit('apriClientAction', data);
 			}
 			socket.emit('apriAgentActionResponse', { action: data.action, unitId: data.unitId, msg: 'reboot initiated' }); //return active units
@@ -266,12 +266,12 @@ io.sockets.on('connection', function (socket) {
   }
 
 	socket.on('apriClientActionResponse', function(data) {  // response from action
-		logger.info('apriClientActionResponse unit id: %s %s', data.unitId, data.action );
+		logger.info('apriClientActionResponse unit id: '+ data.unitId + ' ' + data.action );
 		if (data.device != undefined) {
-			logger.info('apriClientActionResponse device: %s %s', data.unitId, data.device );
+			logger.info('apriClientActionResponse device: ' +  data.unitId + ' ' +  data.device );
 		}
 		if (data.usbInfo != undefined) {
-			logger.info('apriClientActionResponse usbInfo: %s %s', data.unitId, data.usbInfo );
+			logger.info('apriClientActionResponse usbInfo: ' +  data.unitId + ' ' +  data.usbInfo );
 		}
 	});
 
