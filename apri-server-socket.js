@@ -165,6 +165,8 @@ io.sockets.on('connection', function (socket) {
 		var tmpWifiData	= data.wifiScan.toString();
 		fs.writeFileSync(socket.apriSensorLogFile+'_wifi', tmpWifiData );
 		data.wifiScan	= undefined;
+		data.remoteAdress = socket.request.connection.remoteAddress
+		data.handshakeAddress = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address
 		var tmpData	= JSON.stringify(data);
 		fs.writeFileSync(socket.apriSensorLogFile+'_boot', tmpData );
 		//logger.info(socket.apriSensorLogPath+'/'+socket.apriSensorLogFileName);
