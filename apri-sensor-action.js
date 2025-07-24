@@ -9,9 +9,11 @@
 "use strict"; // This is for your code to comply with the ECMAScript 5 standard.
 
 // add module specific requires
-var axios = require('axios'); //todo
-var fs 		= require('fs');
-var sys 	= require('sys');
+//var axios = require('axios'); //todo
+//var fs 		= require('fs');
+//var sys 	= require('sys');
+import fs from 'fs';
+import sys from 'sys';
 
 var _options	= {};
 var apriSensorFileName, apriSensorLocalPathRoot, fileFolder, tmpFolder;
@@ -76,10 +78,11 @@ module.exports = {
 			});
 		}
 
-		axios.get(_url,{
-			//	headers: {}
-			//	,timeout: 4000
-		})
+		fetch(url)  // axios -> fetch (not tested yet)
+//		axios.get(_url,{
+//			//	headers: {}
+//			//	,timeout: 4000
+//		})
 		.then(response => {
 			// log('Response recieved');
 			// if (response.status==200) removeRecord=true;
